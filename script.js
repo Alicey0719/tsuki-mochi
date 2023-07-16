@@ -3,6 +3,8 @@ const dom_tsuki_mochi = document.querySelector('#tsuki_mochi')
 let isMouseDown = false
 let img_count = 1032
 
+preloadimg()
+
 dom_tsuki_move.onmousedown = function(event) {
     isMouseDown = true
         // console.log("mouse down")
@@ -71,4 +73,32 @@ function change_img(add_count) {
 function sleep(waitMsec) {
     var startMsec = new Date();
     while (new Date() - startMsec < waitMsec);
+}
+
+function preloadimg() { 
+    let img_list = []
+    for (let i = 1031; i <= 1062; i++){
+        img_list.push(get_img_path(i))
+    }
+    preloadImages(img_list)
+}
+
+function preloadImages(array) {
+    if (!preloadImages.list) {
+        preloadImages.list = [];
+    }
+    var list = preloadImages.list;
+    for (var i = 0; i < array.length; i++) {
+        var img = new Image();
+        img.onload = function() {
+            var index = list.indexOf(this);
+            if (index !== -1) {
+                // remove image from the array once it's loaded
+                // for memory consumption reasons
+                list.splice(index, 1);
+            }
+        }
+        list.push(img);
+        img.src = array[i];
+    }
 }
